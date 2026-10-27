@@ -1,0 +1,53 @@
+# Advanced GraphRAG Agent (CPU-Optimized)
+
+⚠️ **Status: Work in Progress (Active Development)**
+
+An end-to-end, production-grade MLOps pipeline designed to build, fine-tune, and deploy a hybrid GraphRAG (Graph Retrieval-Augmented Generation) agent running locally on CPU-constrained environments. 
+
+This architecture leverages a scalable cloud ecosystem for heavy training data handling and GPU-accelerated fine-tuning, while serving the operational orchestrator completely locally using graph databases and local LLM runtimes.
+
+---
+
+## 🏗️ Architecture Overview
+
+The system architecture spans across localized environments and cloud infrastructure to balance computing efficiency and data accessibility:
+
+```text
+[ 💻 LOCAL : Préparation ] ──(Docker)──> [ 📂 CLOUD : AWS S3 (Landing Zone) ]
+                                                      │
+                                                      ▼
+[ 💻 LOCAL : Agent GraphRAG ] <──(Quantification GGUF)── [ ☁️ CLOUD GPU : Fine-Tuning ]
+     │                 ▲
+     ▼                 │
+(Neo4j / Ollama) ── (LangGraph)
+```
+
+1. **Data Prep & Ingestion (Local to Cloud):** Local preprocessing pipelines are containerized via **Docker** to ensure reproducibility, pushing curated raw assets up to an **AWS S3 Landing Zone**.
+2. **Cloud-Based Fine-Tuning:** Large-scale embeddings or domain-specific LLM adapters are fine-tuned using high-performance **Cloud GPU infrastructure**.
+3. **Quantization & Compression:** Post-training models are converted and compressed using **GGUF Quantization** to minimize memory footprints.
+4. **Local Runtime Execution:** The compressed model is pulled down to a local framework powered by **Ollama**, querying structured nodes in a **Neo4j** graph database.
+5. **Agentic Orchestration:** **LangGraph** acts as the central state machine executor, handling state preservation, self-correction, and tool routing cycles.
+
+---
+
+## 🛠️ Tech Stack & Ecosystem
+
+* **Orchestration & State Management:** `LangGraph`
+* **Graph Database Management:** `Neo4j`
+* **Local Inference Engine:** `Ollama` (using `GGUF` formats)
+* **Cloud Infrastructure & Storage:** `AWS S3`
+* **Containerization & Deployment:** `Docker`
+* **Language/Core:** `Python`
+
+---
+
+## 🚀 Core Features & Implementation Progress
+
+### Done / Fully Operational
+* **Local to AWS S3 Pipeline:** Automated data synchronization scripts wrapped cleanly in a multi-stage Docker environment.
+* **Knowledge Graph Integration:** Setup and configuration scripts connecting agent logic seamlessly to a Neo4j database endpoint.
+* **Local Execution Environment:** Ollama bindings to load custom quantized models.
+
+### In Progress / Upcoming Milestones
+* **Cloud GPU Fine-Tuning Automation:** Finalizing automated scripts to handle fine-tuning loops on specialized target datasets.
+* **Advanced Routing Logic:** Fine-tuning the LangGraph state machine to perform complex cyclic validation over the retrieved graph sub-structures.
